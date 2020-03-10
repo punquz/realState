@@ -1,7 +1,7 @@
-const ErrorResponse = require("../util/errorResponse");
-const asyncHandler = require("../middleware/async");
-const Planet = require("../models/Planet");
-const User = require("../models/User");
+const ErrorResponse = require('../util/errorResponse');
+const asyncHandler = require('../middleware/async');
+const Planet = require('../models/Planet');
+const User = require('../models/User');
 
 /* 
     @desc Get All Planets
@@ -24,7 +24,7 @@ exports.getPlanets = asyncHandler(async (req, res, next) => {
     .limit(limit);
 
   if (planets.length === 0)
-    return res.status(200).json({ status: true, message: "No data" });
+    return res.status(200).json({ status: true, message: 'No data' });
 
   //Pagination prev and next
   const pagination = {};
@@ -46,7 +46,7 @@ exports.getPlanets = asyncHandler(async (req, res, next) => {
     success: true,
     pagination,
     total: planets.length,
-    msg: "show all planets!",
+    msg: 'show all planets!',
     data: planets
   });
 });
@@ -78,7 +78,7 @@ exports.createPlanet = asyncHandler(async (req, res, next) => {
   const planet = await Planet.create(req.body);
   res
     .status(201)
-    .json({ success: true, data: planet, msg: "Created new planet product!" });
+    .json({ success: true, data: planet, msg: 'Created new planet product!' });
 });
 
 /* 
@@ -118,38 +118,4 @@ exports.deletePlanet = asyncHandler(async (req, res, next) => {
     msg: `Deleted planet ${req.params.id}`,
     data: {}
   });
-});
-
-/* 
-    @desc Add items to the cart
-    @route POST /api/v1/planets/cart
-    @access Private
-**/
-
-exports.postCart = asyncHandler(async (req, res, next) => {
-  const { productId } = req.body;
-  const planet = await Planet.findById(productId);
-  const result = req.user.addToCart(planet);
-  const updatedCartUser = await User.findByIdAndUpdate(req.user.id, {
-    $set: {
-      cart: { ...result }
-    }
-  });
-  res.status(201).json({ success: true, msg: "added items to the cart" });
-});
-
-/* 
-    @desc view items of the cart
-    @route GET /api/v1/planets/cart
-    @access Private
-**/
-
-exports.getCart = asyncHandler(async (req, res, next) => {
-  console.log("dskjhfk");
-  // const user = User.findById(req.user.id);
-  // console.log(user);
-  // const cartItems = await User.findById(req.user.id).populate(
-  //   "cart.items.productId"
-  // );
-  // console.log(cartItems);
 });

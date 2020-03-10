@@ -1,26 +1,26 @@
-const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const { Schema, model } = mongoose;
 
 const UserSchema = new Schema({
   name: {
     type: String,
     trim: true,
-    required: [true, "Please add a name"]
+    required: [true, 'Please add a name']
   },
   email: {
     type: String,
-    required: [true, "Please add an email"],
+    required: [true, 'Please add an email'],
     unique: true,
     match: [
       /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-      "Please add a valid email"
+      'Please add a valid email'
     ]
   },
   password: {
     type: String,
-    required: [true, "Please add a password"],
+    required: [true, 'Please add a password'],
     minlength: 6,
     select: false
   },
@@ -29,7 +29,7 @@ const UserSchema = new Schema({
       {
         productId: {
           type: Schema.Types.ObjectId,
-          ref: "Planet",
+          ref: 'Planet',
           required: true
         },
         quantity: { type: Number, required: true }
@@ -45,7 +45,7 @@ const UserSchema = new Schema({
 });
 
 // Encrypt password using bcrypt
-UserSchema.pre("save", async function(next) {
+UserSchema.pre('save', async function(next) {
   // if (!this.isModified('password')) {
   //   next();
   // }
@@ -90,4 +90,10 @@ UserSchema.methods.addToCart = function(product) {
   return this.cart;
 };
 
-module.exports = model("User", UserSchema);
+//To clear cart after placing an order
+// UserSchema.methods.clearCart = async function() {
+//   this.cart = { items: [] };
+//   return await this.save();
+// };
+
+module.exports = model('User', UserSchema);
