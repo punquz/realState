@@ -90,10 +90,13 @@ UserSchema.methods.addToCart = function(product) {
   return this.cart;
 };
 
-//To clear cart after placing an order
-// UserSchema.methods.clearCart = async function() {
-//   this.cart = { items: [] };
-//   return await this.save();
-// };
+//remove item from cart
+UserSchema.methods.removeFromCart = function(productId) {
+  const updatedCartItems = this.cart.items.filter(item => {
+    return item.productId.toString() !== productId.toString();
+  });
+  this.cart.items = updatedCartItems;
+  return this.cart;
+};
 
 module.exports = model('User', UserSchema);

@@ -41,6 +41,16 @@ exports.getCart = asyncHandler(async (req, res, next) => {
       @access Private
 
 **/
+exports.postRemoveCart = asyncHandler(async (req, res, next) => {
+  const prodId = req.body.productId;
+  const data = req.user.removeFromCart(prodId);
+  let deleteItemCart = await User.findByIdAndUpdate(req.user.id, {
+    $set: {
+      cart: data
+    }
+  });
+  res.status(200).json({ success: true, msg: 'cart item removed' });
+});
 
 /* @desc add/place order
       @route GET /api/v1/users/order
@@ -71,4 +81,20 @@ exports.postOrder = asyncHandler(async (req, res, next) => {
     });
   }
   res.status(201).json({ success: true, msg: 'order placed', result });
+});
+
+/* 
+      @desc view the orders
+      @route GET /api/v1/users/orders
+      @access Private
+
+**/
+
+exports.getOrder = asyncHandler(async (req, res, next) => {
+  let data = await Order.find({ 'user.userId': req.user.id });
+  let orders = data.map(el => el.products);
+  res.status(200).json({
+    success: true,
+    orders
+  });
 });
